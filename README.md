@@ -1,39 +1,76 @@
-# bevyning
+# 🕹️ bevyning
 
-Learning repository for Bevy basics
+A learning repository for exploring the **basics of Bevy** — the modular, data-driven game engine built in Rust.
 
+This project is organized around building a series of **minimum viable projects (MVPs)** to progressively gain familiarity with Bevy concepts such as systems, plugins, asset loading, and physics.
 
-## Useful links
-- [Bevy Book](https://bevy-cheatbook.github.io/)
-- [Bevy examples repo](https://github.com/bevyengine/bevy/tree/main/examples)
-- [Avian 2D docs (physics library)](https://docs.rs/avian2d/latest/avian2d/)
+---
 
-## MVPs
+## 🔗 Useful Links
 
-Note that each of the main MVPs will require a branch to work on and then a PR to be merged. No commits to the main branch are allowed :).
+- 📘 [Bevy Cheat Book](https://bevy-cheatbook.github.io/)
+- 📁 [Bevy Official Examples](https://github.com/bevyengine/bevy/tree/main/examples)
+- ⚙️ [Avian 2D (Physics Library)](https://docs.rs/avian2d/latest/avian2d/)
 
-### Basic little game
-1. Bevy Hello World
+---
 
-This involves the minimum setup to create a Bevy app with a blank screen and the [`DefaultPlugins`](https://docs.rs/bevy/latest/bevy/struct.DefaultPlugins.html) enabled.
-It can be useful to read about how the plugins are defined and why they can be useful but it is not necessary for this step.
+## 🛠️ Development Rules
 
-2. Camera setup and asset loading/spawning
+> ✅ **All work must be done on branches via pull requests.**  
+> 🚫 **No direct commits to `main`.**
 
-This game will be a 2D rendered game and in order to render anything on the screen a camera needs to be spawned.
-After having a camera, the setup for this step is to load your assets.
+---
 
-For this step, you need to load a minimum of two assets:
-- An image that represents the entire texture
-- A spritesheet that contains multiple images in a single texture that will be indexed by a number (like an array)
+## 🎯 MVPs
 
-The next step is to spawn them in the world as `Sprite`s. The usage of each is up to you.
+Each MVP focuses on a specific set of Bevy features. Treat them as progressive, hands-on mini-projects.
 
-3. Movement
+---
 
-Design one of your sprites to be a player and make it moveable with the input system you want (wasd, arrows, or click to move).
+### MVP 1 — Basic 2D Game
 
-***Be careful about delta time, if you don't take it into account, the movement will depend on the framerate which is not what you want.***
+#### 🧪 1. Hello World
 
-If it is anything else than click to move make the player wrap around the screen when it reaches the edge (it doesn't have to be perfect).
+Set up a minimal Bevy app with [`DefaultPlugins`](https://docs.rs/bevy/latest/bevy/struct.DefaultPlugins.html) and a blank window.
 
+> 💡 *WindowPlugin* This plugin allows you to customize the window title, size and modes (e.g `WindowMode::Borderless`).
+
+---
+
+#### 🎥 2. Camera Setup & Asset Loading
+
+- Spawn a 2D camera to render the scene.
+- Make sure to set the [`ImagePlugin`](https://docs.rs/bevy/latest/bevy/prelude/struct.ImagePlugin.html) to [`default_nearest`](https://docs.rs/bevy/latest/bevy/prelude/struct.ImagePlugin.html#method.default_nearest) as we are rendering pixel art.
+- Load a minimum of two assets:
+  - A standalone image texture.
+  - A spritesheet (texture atlas) with multiple indexed sprites.
+
+> 🎨 Use any number of sprites you like, but at least one full image and one spritesheet.
+
+---
+
+#### 🎮 3. Basic Movement
+
+- Designate one sprite as the "player".
+- Implement movement using any input method (`WASD`, arrow keys, or click-to-move).
+- Handle screen wrapping if not using click-to-move.
+
+> ⚠️ *Tip:* Always apply **delta time** for framerate-independent movement.
+
+---
+
+#### 📋 4. Game State & Menu
+
+- Create two states: `Menu` and `Playing`.
+- Add a basic UI menu:
+  - `Start Game` → enters `Playing` state.
+  - `Exit` → quits the game.
+- Press `Esc` during gameplay to return to the menu.
+
+---
+
+### MVP 2 — Physics
+
+(Coming soon...)
+
+---
