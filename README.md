@@ -73,5 +73,4 @@ Set up a minimal Bevy app with [`DefaultPlugins`](https://docs.rs/bevy/latest/be
 
 (Coming soon...)
 
-
 ---
