@@ -43,7 +43,7 @@ Set up a minimal Bevy app with [`DefaultPlugins`](https://docs.rs/bevy/latest/be
 - Make sure to set the [`ImagePlugin`](https://docs.rs/bevy/latest/bevy/prelude/struct.ImagePlugin.html) to [`default_nearest`](https://docs.rs/bevy/latest/bevy/prelude/struct.ImagePlugin.html#method.default_nearest) as we are rendering pixel art.
 - Load a minimum of two assets:
   - A standalone image texture.
-  - A spritesheet (texture atlas) with multiple indexed sprites.
+  - A spritesheet (texture atlas) with multiple indexed sprites. (for the player, make sure there are multiple frames related to a player action, like walking, running, jumping, etc)
 
 > 🎨 Use any number of sprites you like, but at least one full image and one spritesheet.
 
@@ -51,7 +51,7 @@ Set up a minimal Bevy app with [`DefaultPlugins`](https://docs.rs/bevy/latest/be
 
 #### 🎮 3. Basic Movement
 
-- Designate one sprite as the "player".
+- Designate the spritesheet sprite as the "player". (animations will be covered in another MVP)
 - Implement movement using any input method (`WASD`, arrow keys, or click-to-move).
 - Handle screen wrapping if not using click-to-move.
 
@@ -69,8 +69,20 @@ Set up a minimal Bevy app with [`DefaultPlugins`](https://docs.rs/bevy/latest/be
 
 ---
 
-### MVP 2 — Physics
+### MVP 2 — Physics & Animations
 
-(Coming soon...)
+---
+#### 1. Basic Physics
 
+- Setup gravity (zero if top down, positive if bottom up).
+- Add physics components to the player & other necessary entities.
+- Collisions:
+    - The player should be restricted to move in certain spots ([`RigidBody::Static`](https://docs.rs/avian2d/latest/avian2d/dynamics/rigid_body/enum.RigidBody.html))
+    - Dynamic collisions should interact with the player or other entities. The logic of what involves collisions is up to you.
+    - The player should be able to interact with 1 object in the game (via intersection detection).
+---
+
+#### 2. Animations
+- Add some entity state to the player representing the state you want to animate.
+- Add a system to animate the player's spritesheet based on the given state. Again, this implementation is up to you.
 ---
