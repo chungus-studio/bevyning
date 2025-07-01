@@ -33,7 +33,7 @@ Each MVP focuses on a specific set of Bevy features. Treat them as progressive, 
 
 Set up a minimal Bevy app with [`DefaultPlugins`](https://docs.rs/bevy/latest/bevy/struct.DefaultPlugins.html) and a blank window.
 
-> 💡 *WindowPlugin* This plugin allows you to customize the window title, size and modes (e.g `WindowMode::Borderless`).
+> 💡 *WindowPlugin* This plugin allows you to customize the window title, size and modes (e.g `WindowMode::Windowed`).
 
 ---
 
@@ -72,5 +72,6 @@ Set up a minimal Bevy app with [`DefaultPlugins`](https://docs.rs/bevy/latest/be
 ### MVP 2 — Physics
 
 (Coming soon...)
+
 
 ---
