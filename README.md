@@ -72,7 +72,7 @@ Set up a minimal Bevy app with [`DefaultPlugins`](https://docs.rs/bevy/latest/be
 ### MVP 2 — Physics & Animations
 
 ---
-#### 1. Basic Physics
+#### 1. Basic Physics with [`Avian2D`](https://docs.rs/avian2d/latest/avian2d/)
 
 - Setup gravity (zero if top down, positive if bottom up).
 - Add physics components to the player & other necessary entities.
