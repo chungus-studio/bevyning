@@ -15,7 +15,7 @@ fn main() {
     app.register_type::<AnimationConfig>();
     app.register_type::<Player>();
     app.add_systems(Startup, (spawn_camera, load_assets).chain());
-    app.add_systems(Update, (move_player, execute_animations));
+    app.add_systems(Update, (move_player, execute_animations, update_camera));
     app.add_systems(OnEnter(GameState::Playing), spawn_entities);
     app.init_state::<GameState>();
     app.run();
@@ -26,6 +26,7 @@ enum GameState {
     #[default]
     Loading,
     Playing,
+    Menu,
 }
 
 #[derive(Resource, Default)]
@@ -36,7 +37,7 @@ struct GameAssets {
 }
 
 #[derive(Component, Reflect)]
-#[require(MovementSpeed(100.))]
+#[require(MovementSpeed(700.))]
 struct Player;
 
 #[derive(Component, Reflect)]
@@ -44,6 +45,18 @@ struct MovementSpeed(f32);
 
 fn spawn_camera(mut commands: Commands) {
     commands.spawn(Camera2d);
+}
+
+fn update_camera(
+    mut camera_query: Query<&mut Transform, (With<Camera2d>, Without<Player>)>,
+    player_query: Query<&Transform, With<Player>>,
+) {
+    if let (Ok(mut camera_transform), Ok(player_transform)) =
+        (camera_query.single_mut(), player_query.single())
+    {
+        camera_transform.translation.x = player_transform.translation.x;
+        camera_transform.translation.y = player_transform.translation.y;
+    }
 }
 
 fn load_assets(
@@ -77,6 +90,7 @@ fn spawn_entities(mut commands: Commands, game_assets: Res<GameAssets>) {
         },
         Transform::default().with_scale(Vec3::splat(5.0)),
         Name::new("Player"),
+        AnimationConfig::new(0, 3, 10),
     ));
 
     commands.spawn((
@@ -110,12 +124,6 @@ fn move_player(
     }
 }
 
-// This system runs when the user clicks the left arrow key or right arrow key
-fn trigger_animation<S: Component>(mut animation: Single<&mut AnimationConfig, With<S>>) {
-    // We create a new timer when the animation is triggered
-    animation.frame_timer = AnimationConfig::timer_from_fps(animation.fps);
-}
-
 #[derive(Component, Reflect)]
 struct AnimationConfig {
     first_sprite_index: usize,
@@ -135,7 +143,10 @@ impl AnimationConfig {
     }
 
     fn timer_from_fps(fps: u8) -> Timer {
-        Timer::new(Duration::from_secs_f32(1.0 / (fps as f32)), TimerMode::Once)
+        Timer::new(
+            Duration::from_secs_f32(1.0 / (fps as f32)),
+            TimerMode::Repeating,
+        )
     }
 }
 
