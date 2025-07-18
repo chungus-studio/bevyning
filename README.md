@@ -86,3 +86,23 @@ Set up a minimal Bevy app with [`DefaultPlugins`](https://docs.rs/bevy/latest/be
 - Add some entity state to the player representing the state you want to animate.
 - Add a system to animate the player's spritesheet based on the given state. Again, this implementation is up to you.
 ---
+
+### MVP 3 - Custom Assets & Shaders
+
+---
+#### 1. Implement a Custom Asset Loader
+
+Right now, Bevy specific assets and loaders were used (`Image`, `TextureAtlasLayout`) . In order to have dynamic configurations for game objects, using Assets are usually a great place to get this behaviour.
+This also allows the game to hot-reload assets as they change without restarting the game (for this make sure the `file_watcher` feature is enabled in you `Cargo.toml`)
+
+For this step, choose an area of your game that you would like to be able to configure from outside of the game (`.ron`, `.json` file) and implement a custom asset loader for it (docs: [here](https://docs.rs/bevy/0.16.1/bevy/asset/trait.AssetLoader.html), example : [here](https://github.com/bevyengine/bevy/blob/main/examples/asset/custom_asset.rs)).
+
+By default, using an Asset will not necessarily make it automatically reload in game. Make sure this is the case for this specific Asset. I should be able to change the file and whatever this Asset does should now include the new configuration in it's behaviour.
+
+#### 2. Shaders
+
+Bevy has a powerful yet pretty simple shader pipeline setup for you to include your own Materials in the game world or the UI world.
+
+For this step, implement both a [UIMaterial]() and a [Material2d]() shader of your choosing. It can be for a player/prop effect, grayscale shader, projectile effect, anything.
+
+
