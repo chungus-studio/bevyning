@@ -18,7 +18,7 @@ enum MenuInteraction {
 }
 
 fn trigger_menu(mut next_game_state: ResMut<NextState<GameState>>, key: Res<ButtonInput<KeyCode>>) {
-    if key.just_released(KeyCode::KeyM) {
+    if key.just_released(KeyCode::Escape) {
         next_game_state.set(GameState::Menu);
     };
 }
