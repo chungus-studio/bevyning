@@ -23,10 +23,10 @@ impl Plugin for SetupPlugIn {
 
 #[derive(Resource, Default, Reflect)]
 pub struct GameAssets {
-    vampire_idle: Handle<Image>,
-    vampire_walk: Handle<Image>,
-    vampire_idle_layout: Handle<TextureAtlasLayout>,
-    vampire_walk_layout: Handle<TextureAtlasLayout>,
+    pub player_idle: Handle<Image>,
+    pub player_walk: Handle<Image>,
+    pub player_idle_layout: Handle<TextureAtlasLayout>,
+    pub player_walk_layout: Handle<TextureAtlasLayout>,
     tree: Handle<Image>,
 }
 
@@ -84,20 +84,20 @@ fn load_assets(
 ) {
     let tree = asset_server.load("trees/PNG/Assets_separately/Trees/Autumn_tree1.png");
 
-    let player_idle = asset_server.load("vampires/PNG/Vampires1/Idle/Vampires1_Idle_full.png");
+    let vampire_idle = asset_server.load("vampires/PNG/Vampires1/Idle/Vampires1_Idle_full.png");
     let layout_idle = TextureAtlasLayout::from_grid(UVec2::splat(64), 4, 4, None, None);
     let texture_atlas_idle_layout = texture_atlas_layouts.add(layout_idle);
 
-    let player_walk = asset_server.load("vampires/PNG/Vampires1/Walk/Vampires1_Walk_full.png");
+    let vampire_walk = asset_server.load("vampires/PNG/Vampires1/Walk/Vampires1_Walk_full.png");
     let layout_walk = TextureAtlasLayout::from_grid(UVec2::splat(64), 6, 4, None, None);
     let texture_atlas_walk_layout = texture_atlas_layouts.add(layout_walk);
 
     commands.insert_resource(GameAssets {
         tree,
-        vampire_idle: player_idle,
-        vampire_walk: player_walk,
-        vampire_idle_layout: texture_atlas_idle_layout,
-        vampire_walk_layout: texture_atlas_walk_layout,
+        player_idle: vampire_idle,
+        player_walk: vampire_walk,
+        player_idle_layout: texture_atlas_idle_layout,
+        player_walk_layout: texture_atlas_walk_layout,
     });
     next_game_state.set(GameState::Playing);
 }
@@ -106,10 +106,10 @@ fn spawn_entities(mut commands: Commands, game_assets: Res<GameAssets>) {
     commands.spawn((
         Player,
         Sprite {
-            image: game_assets.vampire_idle.clone(),
+            image: game_assets.player_idle.clone(),
             texture_atlas: Some(TextureAtlas {
                 index: 0,
-                layout: game_assets.vampire_idle_layout.clone(),
+                layout: game_assets.player_idle_layout.clone(),
             }),
             ..default()
         },

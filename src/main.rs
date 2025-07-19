@@ -1,4 +1,5 @@
 #![allow(clippy::type_complexity)]
+#![allow(clippy::too_many_arguments)]
 use crate::{menu::MenuPlugIn, player::PlayerPlugIn, setup::SetupPlugIn};
 use bevy::input::common_conditions::input_toggle_active;
 use bevy::prelude::*;
@@ -22,6 +23,8 @@ fn main() {
         PlayerPlugIn,
         SetupPlugIn,
     ));
+
+    app.register_type::<GameState>();
 
     app.init_state::<GameState>()
         .init_state::<FacingDirectionState>()
