@@ -17,12 +17,11 @@ fn main() {
         WorldInspectorPlugin::default().run_if(input_toggle_active(true, KeyCode::AltLeft)),
         StateInspectorPlugin::<GameState>::default(),
         StateInspectorPlugin::<FacingDirectionState>::default(),
+        StateInspectorPlugin::<MovementState>::default(),
         MenuPlugIn,
         PlayerPlugIn,
         SetupPlugIn,
     ));
-
-    app.register_type::<GameState>();
 
     app.init_state::<GameState>()
         .init_state::<FacingDirectionState>()
