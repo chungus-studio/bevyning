@@ -1,6 +1,9 @@
 use std::time::Duration;
 
-use crate::{GameState, player::Player};
+use crate::{
+    EntityState, GameState,
+    player::{Player, PlayerAnimationConfig},
+};
 use bevy::prelude::*;
 use bevy_inspector_egui::quick::ResourceInspectorPlugin;
 
@@ -13,10 +16,7 @@ impl Plugin for SetupPlugIn {
         app.register_type::<AnimationConfig>();
 
         app.add_systems(Startup, (spawn_camera, load_assets))
-            .add_systems(
-                Update,
-                (update_camera, execute_animations).run_if(in_state(GameState::Playing)),
-            )
+            .add_systems(Update, (update_camera).run_if(in_state(GameState::Playing)))
             .add_systems(OnEnter(GameState::Playing), spawn_entities);
     }
 }
@@ -30,12 +30,24 @@ pub struct GameAssets {
     tree: Handle<Image>,
 }
 
+impl GameAssets {
+    pub fn sheet_for_state(
+        &self,
+        state: EntityState,
+    ) -> (Handle<Image>, Handle<TextureAtlasLayout>) {
+        match state {
+            EntityState::Idle => (self.player_idle.clone(), self.player_idle_layout.clone()),
+            EntityState::Moving => (self.player_walk.clone(), self.player_walk_layout.clone()),
+        }
+    }
+}
+
 #[derive(Component, Reflect)]
 pub struct AnimationConfig {
-    first_sprite_index: usize,
-    last_sprite_index: usize,
-    fps: u8,
-    frame_timer: Timer,
+    pub first_sprite_index: usize,
+    pub last_sprite_index: usize,
+    pub fps: u8,
+    pub frame_timer: Timer,
 }
 
 impl AnimationConfig {
@@ -49,10 +61,7 @@ impl AnimationConfig {
     }
 
     fn timer_from_fps(fps: u8) -> Timer {
-        Timer::new(
-            Duration::from_secs_f32(1.0 / (fps as f32)),
-            TimerMode::Repeating,
-        )
+        Timer::new(Duration::from_secs_f32(1.0 / (fps as f32)), TimerMode::Once)
     }
 }
 
@@ -116,6 +125,17 @@ fn spawn_entities(mut commands: Commands, game_assets: Res<GameAssets>) {
         Transform::default().with_scale(Vec3::splat(5.0)),
         Name::new("Player"),
         AnimationConfig::new(0, 3, 10),
+        PlayerAnimationConfig {
+            idle_down: UVec2::new(0, 3),
+            idle_up: UVec2::new(4, 7),
+            idle_left: UVec2::new(8, 11),
+            idle_right: UVec2::new(12, 15),
+
+            walk_down: UVec2::new(0, 5),
+            walk_up: UVec2::new(6, 11),
+            walk_left: UVec2::new(12, 17),
+            walk_right: UVec2::new(18, 23),
+        },
     ));
 
     commands.spawn((
@@ -129,28 +149,4 @@ fn spawn_entities(mut commands: Commands, game_assets: Res<GameAssets>) {
         //#[require(StateScoped::<GameState>(GameState::Playing))]
         StateScoped(GameState::Playing),
     ));
-}
-
-// This system loops through all the sprites in the `TextureAtlas`, from  `first_sprite_index` to
-// `last_sprite_index` (both defined in `AnimationConfig`).
-fn execute_animations(time: Res<Time>, mut query: Query<(&mut AnimationConfig, &mut Sprite)>) {
-    for (mut config, mut sprite) in &mut query {
-        // We track how long the current sprite has been displayed for
-        config.frame_timer.tick(time.delta());
-
-        // If it has been displayed for the user-defined amount of time (fps)...
-        if config.frame_timer.just_finished() {
-            if let Some(atlas) = &mut sprite.texture_atlas {
-                if atlas.index == config.last_sprite_index {
-                    // ...and it IS the last frame, then we move back to the first frame and stop.
-                    atlas.index = config.first_sprite_index;
-                } else {
-                    // ...and it is NOT the last frame, then we move to the next frame...
-                    atlas.index += 1;
-                    // ...and reset the frame timer to start counting all over again
-                    config.frame_timer = AnimationConfig::timer_from_fps(config.fps);
-                }
-            }
-        }
-    }
 }

@@ -12,23 +12,22 @@ mod setup;
 
 fn main() {
     let mut app = App::new();
+    app.register_type::<GameState>()
+        .register_type::<FacingDirection>()
+        .register_type::<EntityState>()
+        .register_type::<MovementSpeed>();
+
     app.add_plugins((
         DefaultPlugins.set(ImagePlugin::default_nearest()),
         EguiPlugin::default(),
         WorldInspectorPlugin::default().run_if(input_toggle_active(true, KeyCode::AltLeft)),
         StateInspectorPlugin::<GameState>::default(),
-        StateInspectorPlugin::<FacingDirectionState>::default(),
-        StateInspectorPlugin::<MovementState>::default(),
         MenuPlugIn,
         PlayerPlugIn,
         SetupPlugIn,
     ));
 
-    app.register_type::<GameState>();
-
-    app.init_state::<GameState>()
-        .init_state::<FacingDirectionState>()
-        .init_state::<MovementState>();
+    app.init_state::<GameState>();
 
     app.run();
 }
@@ -42,9 +41,8 @@ pub enum GameState {
     Menu,
 }
 
-#[derive(States, Default, Clone, PartialEq, Eq, Hash, Debug, Reflect)]
-#[states(scoped_entities)]
-pub enum FacingDirectionState {
+#[derive(Component, Default, Reflect, Clone, Copy, PartialEq, Eq, Hash, Debug)]
+pub enum FacingDirection {
     #[default]
     Down,
     Up,
@@ -52,9 +50,9 @@ pub enum FacingDirectionState {
     Right,
 }
 
-#[derive(States, Default, Clone, PartialEq, Eq, Hash, Debug, Reflect)]
-#[states(scoped_entities)]
-pub enum MovementState {
+#[derive(Component, Default, Reflect, Clone, Copy, PartialEq, Eq, Hash, Debug)]
+#[reflect(Component)]
+pub enum EntityState {
     #[default]
     Idle,
     Moving,
