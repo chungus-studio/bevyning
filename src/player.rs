@@ -10,7 +10,9 @@ impl Plugin for PlayerPlugIn {
     fn build(&self, app: &mut App) {
         app.register_type::<Player>().add_systems(
             Update,
-            (move_player, animate_player).run_if(in_state(GameState::Playing)),
+            (move_player, animate_player)
+                .chain()
+                .run_if(in_state(GameState::Playing)),
         );
     }
 }
