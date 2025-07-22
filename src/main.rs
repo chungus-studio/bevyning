@@ -1,8 +1,7 @@
 #![allow(clippy::type_complexity)]
 #![allow(clippy::too_many_arguments)]
 use crate::{menu::MenuPlugIn, player::PlayerPlugIn, setup::SetupPlugIn};
-use bevy::input::common_conditions::input_toggle_active;
-use bevy::prelude::*;
+use bevy::{input::common_conditions::input_toggle_active, prelude::*};
 use bevy_egui::EguiPlugin;
 use bevy_inspector_egui::quick::{StateInspectorPlugin, WorldInspectorPlugin};
 
@@ -41,6 +40,9 @@ pub enum GameState {
     Menu,
 }
 
+#[derive(Component, Reflect)]
+pub struct MovementSpeed(f32);
+
 #[derive(Component, Default, Reflect, Clone, Copy, PartialEq, Eq, Hash, Debug)]
 pub enum FacingDirection {
     #[default]
@@ -57,6 +59,3 @@ pub enum EntityState {
     Idle,
     Moving,
 }
-
-#[derive(Component, Reflect)]
-pub struct MovementSpeed(f32);

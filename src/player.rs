@@ -1,10 +1,7 @@
-use crate::EntityState;
-use crate::FacingDirection;
-use crate::GameState;
-use crate::MovementSpeed;
-
-use crate::setup::AnimationConfig;
-use crate::setup::GameAssets;
+use crate::{
+    EntityState, FacingDirection, GameState, MovementSpeed,
+    setup::{AnimationConfig, GameAssets},
+};
 use bevy::prelude::*;
 
 pub struct PlayerPlugIn;
