@@ -2,6 +2,7 @@ use crate::{
     EntityState, FacingDirection, GameState, MovementSpeed,
     setup::{AnimationConfig, GameAssets},
 };
+use avian2d::prelude::*;
 use bevy::prelude::*;
 
 pub struct PlayerPlugIn;
@@ -39,41 +40,53 @@ pub struct PlayerAnimationConfig {
 
 fn move_player(
     mut player_q: Query<(
+        &mut LinearVelocity,
+        &mut AngularVelocity,
         &mut Transform,
         &MovementSpeed,
         &mut FacingDirection,
         &mut EntityState,
     )>,
     key: Res<ButtonInput<KeyCode>>,
-    time: Res<Time>,
 ) {
-    let Ok((mut tf, speed, mut facing, mut state)) = player_q.single_mut() else {
+    let Ok((mut lin_velocity, mut ang_velocity, mut tf, speed, mut facing, mut state)) =
+        player_q.single_mut()
+    else {
         return;
     };
+
+    if key.just_pressed(KeyCode::KeyR) {
+        tf.translation = Vec3::ZERO;
+        lin_velocity.0 = Vec2::ZERO;
+        ang_velocity.0 = 0.;
+        tf.rotation = Quat::IDENTITY;
+        return;
+    }
 
     let mut dir = Vec2::ZERO;
 
     if key.pressed(KeyCode::KeyW) {
         dir.y += 1.0;
+        lin_velocity.y = speed.0;
     }
     if key.pressed(KeyCode::KeyS) {
         dir.y -= 1.0;
+        lin_velocity.y = -speed.0;
     }
     if key.pressed(KeyCode::KeyA) {
         dir.x -= 1.0;
+        lin_velocity.x = -speed.0;
     }
     if key.pressed(KeyCode::KeyD) {
         dir.x += 1.0;
+        lin_velocity.x = speed.0;
     }
 
     if dir == Vec2::ZERO {
         *state = EntityState::Idle;
+        lin_velocity.0 = Vec2::ZERO;
         return;
     }
-
-    let displacement = dir.normalize() * speed.0 * time.delta_secs();
-    tf.translation.x += displacement.x;
-    tf.translation.y += displacement.y;
 
     *state = EntityState::Moving;
 

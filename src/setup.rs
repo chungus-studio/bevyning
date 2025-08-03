@@ -4,6 +4,7 @@ use crate::{
     EntityState, GameState,
     player::{Player, PlayerAnimationConfig},
 };
+use avian2d::prelude::{Collider, RigidBody};
 use bevy::prelude::*;
 use bevy_inspector_egui::quick::ResourceInspectorPlugin;
 
@@ -28,6 +29,7 @@ pub struct GameAssets {
     pub player_idle_layout: Handle<TextureAtlasLayout>,
     pub player_walk_layout: Handle<TextureAtlasLayout>,
     tree: Handle<Image>,
+    well: Handle<Image>,
 }
 
 impl GameAssets {
@@ -81,7 +83,6 @@ fn update_camera(
         return;
     };
     let Ok(mut camera_transform) = camera_query.single_mut() else {
-        warn!("Multiple or no camera found");
         return;
     };
     camera_transform.translation.x = player_transform.translation.x;
@@ -95,6 +96,7 @@ fn load_assets(
     mut next_game_state: ResMut<NextState<GameState>>,
 ) {
     let tree = asset_server.load("trees/PNG/Assets_separately/Trees/Autumn_tree1.png");
+    let well = asset_server.load("map_and_other/2 Objects/3 Decor/13.png");
 
     let vampire_idle = asset_server.load("vampires/PNG/Vampires1/Idle/Vampires1_Idle_full.png");
     let layout_idle = TextureAtlasLayout::from_grid(UVec2::splat(64), 4, 4, None, None);
@@ -106,6 +108,7 @@ fn load_assets(
 
     commands.insert_resource(GameAssets {
         tree,
+        well,
         player_idle: vampire_idle,
         player_walk: vampire_walk,
         player_idle_layout: texture_atlas_idle_layout,
@@ -125,8 +128,10 @@ fn spawn_entities(mut commands: Commands, game_assets: Res<GameAssets>) {
             }),
             ..default()
         },
-        Transform::default().with_scale(Vec3::splat(5.0)),
+        Transform::from_xyz(0., 0., 1.).with_scale(Vec3::splat(5.0)),
         Name::new("Player"),
+        RigidBody::Dynamic,
+        Collider::circle(10.),
         AnimationConfig::new(0, 3, 10),
         PlayerAnimationConfig {
             idle_down: UVec2::new(0, 3),
@@ -151,5 +156,19 @@ fn spawn_entities(mut commands: Commands, game_assets: Res<GameAssets>) {
         //Added because there is no struct for this tree upon which I can
         //#[require(StateScoped::<GameState>(GameState::Playing))]
         StateScoped(GameState::Playing),
+    ));
+
+    commands.spawn((
+        Sprite {
+            image: game_assets.well.clone(),
+            ..default()
+        },
+        Transform::from_xyz(500.0, 250.0, 0.0).with_scale(Vec3::splat(5.0)),
+        Name::new("Well"),
+        //Added because there is no struct for this tree upon which I can
+        //#[require(StateScoped::<GameState>(GameState::Playing))]
+        StateScoped(GameState::Playing),
+        RigidBody::Static,
+        Collider::circle(20.),
     ));
 }
