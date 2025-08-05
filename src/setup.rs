@@ -4,7 +4,7 @@ use crate::{
     EntityState, GameState,
     player::{Player, PlayerAnimationConfig},
 };
-use avian2d::prelude::{Collider, RigidBody};
+use avian2d::prelude::{Collider, RigidBody, *};
 use bevy::prelude::*;
 use bevy_inspector_egui::quick::ResourceInspectorPlugin;
 
@@ -132,6 +132,7 @@ fn spawn_entities(mut commands: Commands, game_assets: Res<GameAssets>) {
         Name::new("Player"),
         RigidBody::Dynamic,
         Collider::circle(10.),
+        LockedAxes::ROTATION_LOCKED,
         AnimationConfig::new(0, 3, 10),
         PlayerAnimationConfig {
             idle_down: UVec2::new(0, 3),
